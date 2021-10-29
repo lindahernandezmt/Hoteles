@@ -4,8 +4,12 @@
  */
 package mintic.usa.ciclo3.ejemplosoring;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.text.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,4 +75,34 @@ public class ReservasServicio {
         return aBoolean;
     }
     
+    public ReservasStatus reporteStatusServicio (){
+        List<Reservas>completed= metodosCrud.ReservasStatusRepositorio("completed");
+        List<Reservas>cancelled= metodosCrud.ReservasStatusRepositorio("cancelled");
+        
+        return new ReservasStatus(completed.size(), cancelled.size() );
+    }
+    public List<Reservas> reporteTiempoServicio (String datoA, String datoB){
+        SimpleDateFormat parser = new SimpleDateFormat ("yyyy-MM-dd");
+        
+        Date datoUno = new Date();
+        Date datoDos = new Date();
+        
+        try{
+             datoUno = parser.parse(datoA);
+             datoDos = parser.parse(datoB);
+        }catch(ParseException evt){
+            evt.printStackTrace();
+        }if(datoUno.before(datoDos)){
+            return metodosCrud.ReservasTiempoRepositorio(datoUno, datoDos);
+        }else{
+            return new ArrayList<>();
+        
+        } 
+        
+    }
+        public List<ClienteContador> reporteClientesServicio(){
+            return metodosCrud.getClientesRepositorio();
+        }
+      
+
 }
